@@ -29,7 +29,7 @@
 
 ## 2. 模块边界与目录结构
 
-**依赖纪律：单向。** `designer`、`runtime`、`codegen` 都只能依赖 `core`（和 `components`），彼此互不依赖。
+**依赖纪律：单向无环。** `runtime`、`codegen` 只依赖 `core`（和 `components`），且不反向依赖 `designer`。`designer` 可依赖 `core`/`components`/`runtime`/`storage`——画布复用 runtime 渲染器实现所见即所得。总结：`designer → runtime → core`、`designer → storage`，无环。
 
 ```
 low-code-platform/
