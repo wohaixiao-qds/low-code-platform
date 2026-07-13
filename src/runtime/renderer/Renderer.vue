@@ -5,6 +5,7 @@
       :key="node.id"
       :node="node"
       :ctx="ctx"
+      :design="design"
       @submit="onSubmit"
       @reset="onReset"
       @search="onSearch"
@@ -21,9 +22,9 @@
 import { message } from 'ant-design-vue'
 import type { PageSchema } from '@/core'
 import type { PageRuntimeContext } from '../usePageRuntime'
-import NodeView from './NodeView.vue'
+import NodeView, { type DesignContext } from './NodeView.vue'
 
-const props = defineProps<{ schema: PageSchema; ctx: PageRuntimeContext }>()
+const props = defineProps<{ schema: PageSchema; ctx: PageRuntimeContext; design?: DesignContext }>()
 
 function onSubmit() {
   void props.ctx.submit()

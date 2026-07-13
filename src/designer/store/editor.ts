@@ -3,6 +3,24 @@ import type { ComponentNode, DataSourceSchema, PageSchema } from '@/core'
 
 const ROOT = '__root__'
 
+let idSeq = 0
+/** 生成不冲突的节点 id（替代易碰撞的 Date.now()） */
+export function genNodeId(): string {
+  idSeq += 1
+  return `n${Date.now().toString(36)}-${idSeq.toString(36)}`
+}
+
+/** 深拷贝节点子树并重新生成所有 id（用于复制） */
+function cloneWithNewIds(node: ComponentNode): ComponentNode {
+  return {
+    ...node,
+    id: genNodeId(),
+    props: { ...node.props },
+    bindings: node.bindings ? { ...node.bindings } : undefined,
+    children: node.children?.map(cloneWithNewIds),
+  }
+}
+
 function findNode(nodes: ComponentNode[], id: string): ComponentNode | undefined {
   for (const n of nodes) {
     if (n.id === id) return n
@@ -76,6 +94,16 @@ export const useEditorStore = defineStore('editor', {
         const i = parent.findIndex((n) => n.id === id)
         if (i >= 0) parent.splice(i, 1)
       }
+    },
+    duplicateNode(id: string) {
+      this.snapshot()
+      const parent = findParent(this.schema.body, id)
+      if (!parent) return
+      const idx = parent.findIndex((n) => n.id === id)
+      if (idx < 0) return
+      const clone = cloneWithNewIds(parent[idx])
+      parent.splice(idx + 1, 0, clone)
+      this.selectedId = clone.id
     },
     updateProps(id: string, props: Record<string, unknown>) {
       const n = findNode(this.schema.body, id)
