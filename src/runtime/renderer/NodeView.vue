@@ -11,7 +11,15 @@
     @dragleave.stop="isRow ? (dragOver = false) : undefined"
     @drop.stop="onRowDrop"
   >
-    <div v-if="isSelected" class="node-toolbar">
+    <div v-if="design && isRow" class="container-handle" :class="{ 'is-selected': isSelected }" @click.stop="onSelect">
+      <span class="grip">⠿</span>
+      <span class="handle-label">行 · {{ node.props.columns ?? 1 }} 列</span>
+      <div v-if="isSelected" class="handle-actions">
+        <button class="tool-btn" title="复制" @click.stop="design!.onDuplicate(node.id)">⧉</button>
+        <button class="tool-btn danger" title="删除" @click.stop="design!.onRemove(node.id)">✕</button>
+      </div>
+    </div>
+    <div v-else-if="isSelected" class="node-toolbar">
       <span class="node-type">{{ node.type }}</span>
       <button class="tool-btn" title="复制" @click.stop="design!.onDuplicate(node.id)">⧉</button>
       <button class="tool-btn danger" title="删除" @click.stop="design!.onRemove(node.id)">✕</button>
@@ -138,6 +146,42 @@ function colSpan(child: ComponentNode): number {
 .node-wrap.is-container {
   min-height: 40px;
   padding: 4px;
+  padding-top: 0;
+}
+.container-handle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  margin: 2px 0 6px;
+  font-size: 12px;
+  color: #666;
+  background: #f0f0f0;
+  border: 1px solid #e4e4e4;
+  border-radius: 3px;
+  cursor: grab;
+  user-select: none;
+}
+.container-handle:hover {
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+.container-handle.is-selected {
+  background: #1677ff;
+  color: #fff;
+  border-color: #1677ff;
+}
+.container-handle .grip {
+  cursor: grab;
+  opacity: 0.6;
+  line-height: 1;
+}
+.container-handle .handle-label {
+  flex: 1;
+}
+.container-handle .handle-actions {
+  display: flex;
+  gap: 2px;
 }
 .node-wrap.drop-target {
   border: 1px dashed #1677ff;
