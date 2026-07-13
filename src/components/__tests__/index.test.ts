@@ -1,0 +1,11 @@
+import { describe, it, expect, beforeEach } from 'vitest'
+import { clearRegistry, listAll } from '@/core'
+import { registerAll } from '../index'
+
+describe('registerAll', () => {
+  beforeEach(() => clearRegistry())
+  it('注册全部物料（8 表单 + 2 布局 + 2 列表 + 1 详情 = 13）', () => {
+    registerAll()
+    expect(listAll()).toHaveLength(13)
+  })
+})
