@@ -81,6 +81,10 @@ export const useEditorStore = defineStore('editor', {
       const n = findNode(this.schema.body, id)
       if (n) n.props = { ...n.props, ...props }
     },
+    updateBindings(id: string, field: string) {
+      const n = findNode(this.schema.body, id)
+      if (n) n.bindings = { ...(n.bindings ?? {}), field }
+    },
     setDataSource(ds: DataSourceSchema) {
       this.schema.dataSource = ds
     },
