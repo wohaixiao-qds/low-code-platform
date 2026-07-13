@@ -1,9 +1,13 @@
 import type { PageSchema } from '@/core'
-import { LocalStorage } from './local-storage'
+import { IndexedDBStorage } from './indexed-db'
 import { validateSchema } from '@/core'
 
 export * from './types'
-export const pageStorage: LocalStorage = new LocalStorage()
+export { LocalStorage } from './local-storage'
+export { IndexedDBStorage } from './indexed-db'
+
+// 默认存储：IndexedDB（容量大、异步、适合大量页面）。需要换回 localStorage 时改这一行即可。
+export const pageStorage = new IndexedDBStorage()
 
 // 导出 schema 为 JSON 文件下载
 export function exportSchema(schema: PageSchema): void {
