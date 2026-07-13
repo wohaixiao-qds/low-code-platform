@@ -16,6 +16,7 @@ export function registerLayout() {
           label: '列数',
           type: 'select',
           default: 1,
+          group: '布局',
           options: [
             { label: '1列', value: 1 },
             { label: '2列', value: 2 },

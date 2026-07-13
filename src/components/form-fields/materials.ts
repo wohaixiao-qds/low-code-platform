@@ -9,11 +9,11 @@ import DatePickerField from './DatePickerField.vue'
 import InputNumberField from './InputNumberField.vue'
 import SwitchField from './SwitchField.vue'
 
-const commonLabel: PropField = { name: 'label', label: '标签', type: 'string' }
-const commonRequired: PropField = { name: 'required', label: '必填', type: 'boolean' }
-const commonPlaceholder: PropField = { name: 'placeholder', label: '占位提示', type: 'string' }
-const optionsField: PropField = { name: 'options', label: '选项', type: 'textarea' }
-const colSpan: PropField = { name: 'colSpan', label: '跨列数', type: 'number', default: 1 }
+const commonLabel: PropField = { name: 'label', label: '标签', type: 'string', group: '基本' }
+const commonRequired: PropField = { name: 'required', label: '必填', type: 'boolean', group: '校验' }
+const commonPlaceholder: PropField = { name: 'placeholder', label: '占位提示', type: 'string', group: '基本' }
+const optionsField: PropField = { name: 'options', label: '选项', type: 'textarea', group: '基本' }
+const colSpan: PropField = { name: 'colSpan', label: '跨列数', type: 'number', default: 1, group: '布局' }
 
 export function registerFormFields() {
   register(
@@ -25,7 +25,7 @@ export function registerFormFields() {
         commonLabel,
         commonPlaceholder,
         commonRequired,
-        { name: 'maxLength', label: '最大长度', type: 'number' },
+        { name: 'maxLength', label: '最大长度', type: 'number', group: '校验' },
         colSpan,
       ],
     },

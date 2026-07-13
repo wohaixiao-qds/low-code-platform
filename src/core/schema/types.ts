@@ -40,6 +40,7 @@ export interface PropField {
   type: PropType
   options?: Array<{ label: string; value: string | number }>
   default?: unknown
+  group?: string // 属性分组（属性面板按此折叠展示）；缺省 = '基本'
 }
 
 export interface MaterialMeta {
