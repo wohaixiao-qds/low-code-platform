@@ -21,18 +21,26 @@ const design = computed<DesignContext>(() => ({
   onSelect: (id: string) => store.selectNode(id),
   onDuplicate: (id: string) => store.duplicateNode(id),
   onRemove: (id: string) => store.removeNode(id),
+  onDropInto: (parentId: string, type: string) => dropInto(parentId, type),
 }))
 
-function onDrop() {
-  const type = (globalThis as unknown as Record<string, unknown>).__dragType as string | undefined
-  if (!type) return
+// 创建一个 type 物料的节点并放入指定父级（'__root__' 为画布根）
+function dropInto(parentId: string, type: string) {
   const meta = getMeta(type)
   if (!meta) return
   const id = genNodeId()
   const props: Record<string, unknown> = {}
   for (const p of meta.propsSchema) if (p.default !== undefined) props[p.name] = p.default
-  store.addNode('__root__', { id, type, props, ...(meta.isContainer ? { children: [] } : {}) })
+  store.addNode(parentId, { id, type, props, ...(meta.isContainer ? { children: [] } : {}) })
   store.selectNode(id)
+  // 用完即清，避免误触发
+  ;(globalThis as unknown as Record<string, unknown>).__dragType = undefined
+}
+
+function onDrop() {
+  const type = (globalThis as unknown as Record<string, unknown>).__dragType as string | undefined
+  if (!type) return
+  dropInto('__root__', type)
 }
 </script>
 

@@ -3,8 +3,11 @@
   <div
     v-if="design"
     class="node-wrap"
-    :class="{ 'is-selected': isSelected, 'is-container': isRow }"
+    :class="{ 'is-selected': isSelected, 'is-container': isRow, 'drop-target': isRow && dragOver }"
     @click.stop="onSelect"
+    @dragover.prevent.stop="isRow ? (dragOver = true) : undefined"
+    @dragleave.stop="isRow ? (dragOver = false) : undefined"
+    @drop.stop="onRowDrop"
   >
     <div v-if="isSelected" class="node-toolbar">
       <span class="node-type">{{ node.type }}</span>
@@ -26,6 +29,7 @@
         <NodeView :node="child" :ctx="ctx" :design="design" @submit="emit('submit')" @reset="emit('reset')" @search="(v: Record<string, unknown>) => emit('search', v)" />
       </a-col>
     </a-row>
+    <div v-if="isRow && !node.children?.length" class="row-empty">把字段拖到这里放入此行</div>
   </div>
   <!-- 运行态：原样渲染（运行时不传 design） -->
   <component
@@ -46,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { resolveComponent, type ComponentNode } from '@/core'
 import type { PageRuntimeContext } from '../usePageRuntime'
 
@@ -58,6 +62,7 @@ export interface DesignContext {
   onSelect: (id: string) => void
   onDuplicate: (id: string) => void
   onRemove: (id: string) => void
+  onDropInto: (parentId: string, type: string) => void
 }
 
 const props = defineProps<{
@@ -74,6 +79,7 @@ const emit = defineEmits<{
 const comp = computed(() => resolveComponent<any>(props.node.type))
 const isRow = computed(() => props.node.type === 'Row')
 const isSelected = computed(() => props.design?.selectedId === props.node.id)
+const dragOver = ref(false)
 const fieldValue = computed(() => {
   const f = props.node.bindings?.field
   return f ? props.ctx.data[f] : undefined
@@ -86,6 +92,17 @@ function onUpdate(v: unknown) {
 
 function onSelect() {
   props.design?.onSelect(props.node.id)
+}
+
+// Row 作为放置目标：drop 冒泡到这里时（已 stop），把拖入的物料加为本节点子级
+function onRowDrop() {
+  if (!isRow.value || !props.design) {
+    dragOver.value = false
+    return
+  }
+  const type = (globalThis as unknown as Record<string, unknown>).__dragType as string | undefined
+  dragOver.value = false
+  if (type) props.design.onDropInto(props.node.id, type)
 }
 
 function colSpan(child: ComponentNode): number {
@@ -108,6 +125,22 @@ function colSpan(child: ComponentNode): number {
 .node-wrap.is-selected {
   border: 1px solid #1677ff;
   outline: 1px solid #1677ff;
+}
+.node-wrap.is-container {
+  min-height: 40px;
+  padding: 4px;
+}
+.node-wrap.drop-target {
+  border: 1px dashed #1677ff;
+  background: #e6f4ff;
+}
+.row-empty {
+  padding: 12px;
+  text-align: center;
+  color: #bbb;
+  font-size: 12px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
 }
 .node-toolbar {
   position: absolute;
