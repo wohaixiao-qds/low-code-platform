@@ -1,9 +1,11 @@
 import { reactive } from 'vue'
+import { message } from 'ant-design-vue'
+import type { PageSchema } from '@/core'
+import { exec } from './datasource/executor'
 
 /**
  * 数据总线上下文（由 Renderer/NodeView 消费）。
- * T10 仅定义接口签名；T11 将用真实实现替换 usePageRuntime 的函数体，
- * 但本接口（PageRuntimeContext）签名必须保持稳定。
+ * 接口签名必须保持稳定：Renderer/NodeView 依赖此类型。
  */
 export interface PageRuntimeContext {
   data: Record<string, unknown>
@@ -14,22 +16,40 @@ export interface PageRuntimeContext {
 }
 
 /**
- * T10 占位实现：返回最小可用的 PageRuntimeContext。
- * T11 将替换为真实数据加载/提交逻辑。
+ * 页面运行时：基于 PageSchema 构建数据总线（reactive），
+ * 提供 refresh（按 dataSource.load 拉取）、submit（按 dataSource.submit 提交）、
+ * reset（清空数据总线）三个生命周期方法。
  */
-export function usePageRuntime(): PageRuntimeContext {
+export function usePageRuntime(schema: PageSchema): PageRuntimeContext {
   const data = reactive<Record<string, unknown>>({})
-  return {
+  const ctx: PageRuntimeContext = {
     data,
     error: null,
-    async refresh() {
-      /* T11: 按 dataSource.load 拉取数据 */
+    async refresh(params?) {
+      const load = schema.dataSource?.load
+      if (!load) return
+      try {
+        ctx.error = null
+        const res = await exec(load, params)
+        Object.assign(data, res)
+      } catch (e) {
+        ctx.error = e as Error
+        message.error('加载失败')
+      }
     },
     async submit() {
-      /* T11: 按 dataSource.submit 提交 */
+      const submit = schema.dataSource?.submit
+      if (!submit) return
+      try {
+        await exec(submit, { ...data })
+        message.success('提交成功')
+      } catch (e) {
+        message.error('提交失败：' + (e as Error).message)
+      }
     },
     reset() {
-      /* T11: 重置为初始值 */
+      for (const k of Object.keys(data)) delete data[k]
     },
   }
+  return ctx
 }
