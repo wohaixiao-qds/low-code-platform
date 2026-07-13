@@ -9,7 +9,7 @@
 import { computed } from 'vue'
 import { useEditorStore, genNodeId } from '../store/editor'
 import { Renderer, usePageRuntime } from '@/runtime'
-import { getMeta } from '@/core'
+import { getMeta, type ComponentNode } from '@/core'
 import type { DesignContext } from '@/runtime/renderer/NodeView.vue'
 
 const store = useEditorStore()
@@ -24,15 +24,37 @@ const design = computed<DesignContext>(() => ({
   onDropInto: (parentId: string, type: string) => dropInto(parentId, type),
 }))
 
-// 创建一个 type 物料的节点并放入指定父级（'__root__' 为画布根）
-function dropInto(parentId: string, type: string) {
+// 根据 meta 构建一个新节点（填默认值；容器初始化 children）
+function createNode(type: string): ComponentNode | null {
   const meta = getMeta(type)
-  if (!meta) return
+  if (!meta) return null
   const id = genNodeId()
   const props: Record<string, unknown> = {}
   for (const p of meta.propsSchema) if (p.default !== undefined) props[p.name] = p.default
-  store.addNode(parentId, { id, type, props, ...(meta.isContainer ? { children: [] } : {}) })
-  store.selectNode(id)
+  const node: ComponentNode = { id, type, props }
+  if (meta.isContainer) node.children = []
+  return node
+}
+
+// 把 type 物料放入指定父级（'__root__' 为画布根）
+function dropInto(parentId: string, type: string) {
+  const meta = getMeta(type)
+  if (!meta) return
+  const node = createNode(type)
+  if (!node) return
+  // 表单字段落到画布根：自动包一层 Row，让列布局/跨列天然可调
+  if (parentId === '__root__' && meta.group === '表单字段') {
+    const row = createNode('Row')
+    if (row) {
+      row.children = [node]
+      store.addNode('__root__', row)
+    } else {
+      store.addNode('__root__', node)
+    }
+  } else {
+    store.addNode(parentId, node)
+  }
+  store.selectNode(node.id)
   // 用完即清，避免误触发
   ;(globalThis as unknown as Record<string, unknown>).__dragType = undefined
 }
