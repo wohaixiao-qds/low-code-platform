@@ -23,4 +23,18 @@ describe('schema types', () => {
     }
     expect(node.bindings?.field).toBe('name')
   })
+  it('可构造 DataSourceSchema', () => {
+    const ds: DataSourceSchema = {
+      load: { url: '/api/x', method: 'GET' },
+      submit: { url: '/api/x', method: 'POST' },
+    }
+    expect(ds.load?.url).toBe('/api/x')
+  })
+  it('可构造 MaterialMeta + PropField', () => {
+    const meta: MaterialMeta = {
+      type: 'Input', group: '表单字段', label: '单行文本',
+      propsSchema: [{ name: 'label', label: '标签', type: 'string' } satisfies PropField],
+    }
+    expect(meta.type).toBe('Input')
+  })
 })
