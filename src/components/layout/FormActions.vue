@@ -1,6 +1,6 @@
 <template>
   <div class="form-actions">
-    <a-button type="primary" html-type="submit">{{ submitText }}</a-button>
+    <a-button type="primary" @click="emit('submit')">{{ submitText }}</a-button>
     <a-button style="margin-left: 8px" @click="emit('reset')">重置</a-button>
   </div>
 </template>
