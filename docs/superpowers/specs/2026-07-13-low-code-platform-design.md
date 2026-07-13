@@ -278,13 +278,12 @@ Renderer 遍历 body（ComponentNode 树）
 // list 加载
 const data = await datasource.exec(schema.dataSource.load, { page: 1, size: 10 })
 
-// form 提交
-const values = collectByBindings(schema.body)   // 按 bindings.field 收集
-await datasource.exec(schema.dataSource.submit, values)
+// form 提交：直接把数据总线对象交给数据源（见下节）
+await datasource.exec(schema.dataSource.submit, formData)
 ```
 
-- `collectByBindings`：遍历组件树，把带 `bindings.field` 的组件当前值收集成对象。
 - `datasource.exec`：内部 fetch（method + url + body），返回 Promise。MVP 直连。
+- 表单值的收集**不需要遍历组件树**——靠下面的数据总线直接拿到。
 
 ### 页面级数据总线
 
@@ -407,7 +406,7 @@ async function onSubmit() { await fetch('/api/customer', { method:'POST', body: 
 | 层 | 范围 | 优先级 |
 |----|------|--------|
 | **core** | schema 校验、注册表、版本迁移 | 必测（纯逻辑最好测） |
-| **runtime** | `collectByBindings`、渲染快照、数据源执行器（mock fetch） | 必测 |
+| **runtime** | 渲染快照、数据源执行器（mock fetch）、数据总线双向绑定 | 必测 |
 | **storage** | LocalStorage 实现 CRUD（mock）、接口契约 | 必测 |
 | **designer** | 拖入生成节点、改属性写回、删除更新树 | 尽量补 |
 | **UI 视觉** | 拖拽/布局效果 | 手动验 |
@@ -425,7 +424,7 @@ async function onSubmit() { await fetch('/api/customer', { method:'POST', body: 
 - 设计器（物料/画布/属性/大纲、拖拽选中、页面类型切换、页面设置配数据源、撤销）
 - 运行时（组件无关渲染器、页面级数据总线、数据源执行器、错误处理）
 - 存储（PageStorage 接口 + localStorage 实现 + JSON 导入导出）
-- 测试（core / collectByBindings / 存储层）
+- 测试（core / 数据总线 + 渲染 / 存储层）
 
 **不做（预留）**：
 - 出码（codegen）实现——只保证 schema 可翻译
