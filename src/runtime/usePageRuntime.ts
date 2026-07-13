@@ -30,8 +30,10 @@ export function usePageRuntime(schema: PageSchema): PageRuntimeContext {
       if (!load) return
       try {
         ctx.error = null
-        const res = await exec(load, params)
-        Object.assign(data, res)
+        const res = (await exec(load, params)) as Record<string, unknown> | null
+        // replace, not merge — a fresh load should not leave stale keys from a prior record
+        for (const k of Object.keys(data)) delete data[k]
+        if (res && typeof res === 'object') Object.assign(data, res)
       } catch (e) {
         ctx.error = e as Error
         message.error('加载失败')
