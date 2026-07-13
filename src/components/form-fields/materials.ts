@@ -21,6 +21,7 @@ export function registerFormFields() {
       type: 'Input',
       group: '表单字段',
       label: '单行文本',
+      icon: '📝',
       propsSchema: [
         commonLabel,
         commonPlaceholder,
@@ -32,31 +33,31 @@ export function registerFormFields() {
     InputField,
   )
   register(
-    { type: 'Textarea', group: '表单字段', label: '多行文本', propsSchema: [commonLabel, commonPlaceholder, commonRequired, colSpan] },
+    { type: 'Textarea', group: '表单字段', label: '多行文本', icon: '📄', propsSchema: [commonLabel, commonPlaceholder, commonRequired, colSpan] },
     TextareaField,
   )
   register(
-    { type: 'Select', group: '表单字段', label: '下拉选择', propsSchema: [commonLabel, commonRequired, optionsField, colSpan] },
+    { type: 'Select', group: '表单字段', label: '下拉选择', icon: '📋', propsSchema: [commonLabel, commonRequired, optionsField, colSpan] },
     SelectField,
   )
   register(
-    { type: 'Radio', group: '表单字段', label: '单选', propsSchema: [commonLabel, optionsField, colSpan] },
+    { type: 'Radio', group: '表单字段', label: '单选', icon: '🔘', propsSchema: [commonLabel, optionsField, colSpan] },
     RadioField,
   )
   register(
-    { type: 'Checkbox', group: '表单字段', label: '多选', propsSchema: [commonLabel, optionsField, colSpan] },
+    { type: 'Checkbox', group: '表单字段', label: '多选', icon: '☑️', propsSchema: [commonLabel, optionsField, colSpan] },
     CheckboxField,
   )
   register(
-    { type: 'DatePicker', group: '表单字段', label: '日期', propsSchema: [commonLabel, commonRequired, colSpan] },
+    { type: 'DatePicker', group: '表单字段', label: '日期', icon: '📅', propsSchema: [commonLabel, commonRequired, colSpan] },
     DatePickerField,
   )
   register(
-    { type: 'InputNumber', group: '表单字段', label: '数字', propsSchema: [commonLabel, commonRequired, colSpan] },
+    { type: 'InputNumber', group: '表单字段', label: '数字', icon: '🔢', propsSchema: [commonLabel, commonRequired, colSpan] },
     InputNumberField,
   )
   register(
-    { type: 'Switch', group: '表单字段', label: '开关', propsSchema: [commonLabel, colSpan] },
+    { type: 'Switch', group: '表单字段', label: '开关', icon: '🔘', propsSchema: [commonLabel, colSpan] },
     SwitchField,
   )
 }

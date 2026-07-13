@@ -8,6 +8,7 @@ export function registerList() {
       type: 'Table',
       group: '列表',
       label: '数据表格',
+      icon: '▦',
       pageTypes: ['list'],
       propsSchema: [
         { name: 'columns', label: '列定义(JSON)', type: 'textarea' },
@@ -21,6 +22,7 @@ export function registerList() {
       type: 'SearchForm',
       group: '列表',
       label: '查询表单',
+      icon: '🔍',
       isContainer: false,
       pageTypes: ['list'],
       propsSchema: [{ name: 'fields', label: '查询字段(JSON)', type: 'textarea' }],

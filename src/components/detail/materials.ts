@@ -7,6 +7,7 @@ export function registerDetail() {
       type: 'Descriptions',
       group: '详情',
       label: '详情描述',
+      icon: '☰',
       pageTypes: ['detail'],
       propsSchema: [
         { name: 'fields', label: '字段(JSON)', type: 'textarea' },

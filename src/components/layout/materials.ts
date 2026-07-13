@@ -8,6 +8,7 @@ export function registerLayout() {
       type: 'Row',
       group: '布局',
       label: '行',
+      icon: '▭',
       isContainer: true,
       pageTypes: ['form'],
       propsSchema: [
@@ -33,6 +34,7 @@ export function registerLayout() {
       type: 'FormActions',
       group: '布局',
       label: '提交按钮',
+      icon: '✅',
       pageTypes: ['form'],
       propsSchema: [{ name: 'submitText', label: '按钮文字', type: 'string', default: '提交' }],
     },
