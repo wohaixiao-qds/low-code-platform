@@ -26,3 +26,21 @@ function onDrop() {
   store.selectNode(id)
 }
 </script>
+
+<style scoped>
+.canvas {
+  height: 100%;
+  min-height: 100%;
+}
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 320px;
+  color: #999;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+  background: #fafafa;
+}
+</style>
