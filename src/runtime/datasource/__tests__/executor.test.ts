@@ -20,4 +20,13 @@ describe('datasource executor', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 500 }))
     await expect(exec({ url: '/x', method: 'GET' })).rejects.toThrow()
   })
+  it('GET 把 body 作为 query params 拼到 url 上', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }))
+    spy.mockClear()
+    await exec({ url: '/api/x', method: 'GET' }, { page: 1, name: 'ab' })
+    const [calledUrl] = spy.mock.calls[0] as [string, RequestInit]
+    expect(calledUrl).toContain('page=1')
+    expect(calledUrl).toContain('name=ab')
+    spy.mockRestore()
+  })
 })

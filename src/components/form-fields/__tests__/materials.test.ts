@@ -13,4 +13,9 @@ describe('form field materials', () => {
     const m = getMeta('Input')!
     expect(m.propsSchema.map((p) => p.name)).toContain('label')
   })
+  it('Input 元信息含 colSpan prop', () => {
+    registerFormFields()
+    const m = getMeta('Input')!
+    expect(m.propsSchema.map((p) => p.name)).toContain('colSpan')
+  })
 })

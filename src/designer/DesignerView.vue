@@ -45,8 +45,12 @@ import type { PageType } from '@/core'
 const store = useEditorStore()
 
 async function onSave() {
-  await pageStorage.save(store.schema)
-  message.success('已保存')
+  try {
+    await pageStorage.save(store.schema)
+    message.success('已保存')
+  } catch (e) {
+    message.error('保存失败：' + (e as Error).message)
+  }
 }
 </script>
 
