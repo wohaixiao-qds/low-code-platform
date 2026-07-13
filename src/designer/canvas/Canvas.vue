@@ -21,7 +21,7 @@ const design = computed<DesignContext>(() => ({
   onSelect: (id: string) => store.selectNode(id),
   onDuplicate: (id: string) => store.duplicateNode(id),
   onRemove: (id: string) => store.removeNode(id),
-  onDropInto: (parentId: string, type: string) => dropInto(parentId, type),
+  onDropAt: (parentId: string) => handleDropAt(parentId),
 }))
 
 // 根据 meta 构建一个新节点（填默认值；容器初始化 children）
@@ -53,16 +53,29 @@ function dropInto(parentId: string, type: string) {
     }
   } else {
     store.addNode(parentId, node)
+    // 拖进已有 Row：按子节点数自动分列
+    if (parentId !== '__root__') store.balanceColumns(parentId)
   }
   store.selectNode(node.id)
+}
+
+// 统一放置入口：区分「移动已有节点」和「新建物料」
+function handleDropAt(parentId: string) {
+  const g = globalThis as unknown as Record<string, unknown>
+  const dragNodeId = g.__dragNodeId as string | undefined
+  const dragType = g.__dragType as string | undefined
+  if (dragNodeId) {
+    store.moveNode(dragNodeId, parentId)
+  } else if (dragType) {
+    dropInto(parentId, dragType)
+  }
   // 用完即清，避免误触发
-  ;(globalThis as unknown as Record<string, unknown>).__dragType = undefined
+  g.__dragNodeId = undefined
+  g.__dragType = undefined
 }
 
 function onDrop() {
-  const type = (globalThis as unknown as Record<string, unknown>).__dragType as string | undefined
-  if (!type) return
-  dropInto('__root__', type)
+  handleDropAt('__root__')
 }
 </script>
 

@@ -4,7 +4,9 @@
     v-if="design"
     class="node-wrap"
     :class="{ 'is-selected': isSelected, 'is-container': isRow, 'drop-target': isRow && dragOver }"
+    draggable="true"
     @click.stop="onSelect"
+    @dragstart.stop="onDragStart"
     @dragover.prevent.stop="isRow ? (dragOver = true) : undefined"
     @dragleave.stop="isRow ? (dragOver = false) : undefined"
     @drop.stop="onRowDrop"
@@ -62,7 +64,8 @@ export interface DesignContext {
   onSelect: (id: string) => void
   onDuplicate: (id: string) => void
   onRemove: (id: string) => void
-  onDropInto: (parentId: string, type: string) => void
+  /** 拖拽落到 parentId 上：Canvas 依据全局标记区分「新建(__dragType)」或「移动(__dragNodeId)」 */
+  onDropAt: (parentId: string) => void
 }
 
 const props = defineProps<{
@@ -94,15 +97,21 @@ function onSelect() {
   props.design?.onSelect(props.node.id)
 }
 
-// Row 作为放置目标：drop 冒泡到这里时（已 stop），把拖入的物料加为本节点子级
+// 拖起已有节点 → 标记为「移动」拖拽，清掉物料拖拽标记
+function onDragStart() {
+  const g = globalThis as unknown as Record<string, unknown>
+  g.__dragNodeId = props.node.id
+  g.__dragType = undefined
+}
+
+// Row 作为放置目标：交给 Canvas 的 onDropAt 统一处理（新建 or 移动）
 function onRowDrop() {
   if (!isRow.value || !props.design) {
     dragOver.value = false
     return
   }
-  const type = (globalThis as unknown as Record<string, unknown>).__dragType as string | undefined
   dragOver.value = false
-  if (type) props.design.onDropInto(props.node.id, type)
+  props.design.onDropAt(props.node.id)
 }
 
 function colSpan(child: ComponentNode): number {

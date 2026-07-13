@@ -54,7 +54,9 @@ const groups = computed(() => {
 const totalShown = computed(() => groups.value.reduce((n, g) => n + g.items.length, 0))
 
 function onDragStart(type: string) {
-  ;(globalThis as unknown as Record<string, unknown>).__dragType = type
+  const g = globalThis as unknown as Record<string, unknown>
+  g.__dragType = type
+  g.__dragNodeId = undefined // 物料拖拽 = 新建，清掉移动标记
 }
 </script>
 

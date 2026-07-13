@@ -21,6 +21,16 @@ function cloneWithNewIds(node: ComponentNode): ComponentNode {
   }
 }
 
+/** targetId 是否在 node 的子孙子树内（防循环：不能把节点移进自己的后代） */
+function isDescendant(node: ComponentNode, targetId: string): boolean {
+  if (!node.children) return false
+  for (const c of node.children) {
+    if (c.id === targetId) return true
+    if (isDescendant(c, targetId)) return true
+  }
+  return false
+}
+
 function findNode(nodes: ComponentNode[], id: string): ComponentNode | undefined {
   for (const n of nodes) {
     if (n.id === id) return n
@@ -104,6 +114,39 @@ export const useEditorStore = defineStore('editor', {
       const clone = cloneWithNewIds(parent[idx])
       parent.splice(idx + 1, 0, clone)
       this.selectedId = clone.id
+    },
+    /** 把 id 节点移到 targetParentId 下（'__root__' 为画布根）。禁止移入自身或自己的后代。 */
+    moveNode(id: string, targetParentId: string) {
+      if (id === targetParentId) return
+      const node = findNode(this.schema.body, id)
+      if (!node) return
+      // 目标若是本节点的后代 → 会成环，拒绝
+      if (targetParentId !== ROOT && isDescendant(node, targetParentId)) return
+      this.snapshot()
+      const srcParent = findParent(this.schema.body, id)
+      if (srcParent) {
+        const i = srcParent.findIndex((n) => n.id === id)
+        if (i >= 0) srcParent.splice(i, 1)
+      }
+      if (targetParentId === ROOT) {
+        this.schema.body.push(node)
+      } else {
+        const target = findNode(this.schema.body, targetParentId)
+        if (target) {
+          target.children = target.children ?? []
+          target.children.push(node)
+        }
+      }
+      this.balanceColumns(targetParentId)
+      this.selectedId = id
+    },
+    /** Row 容器按子节点数自动分列（封顶 4）。非容器或根忽略。 */
+    balanceColumns(parentId: string) {
+      if (parentId === ROOT) return
+      const n = findNode(this.schema.body, parentId)
+      if (n && n.children && n.type === 'Row') {
+        n.props = { ...n.props, columns: Math.min(n.children.length, 4) }
+      }
     },
     updateProps(id: string, props: Record<string, unknown>) {
       const n = findNode(this.schema.body, id)
