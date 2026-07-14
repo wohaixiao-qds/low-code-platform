@@ -82,13 +82,16 @@ export class IndexedDBStorage implements PageStorage {
   async save(schema: PageSchema): Promise<void> {
     const db = await openDB()
     try {
+      // IDB put 走结构化克隆，不能存响应式 Proxy（Pinia store.schema 直接传会抛
+      // "could not be cloned"）。先 JSON 深拷成纯对象，顺便剥离非可序列化字段。
+      const plain = JSON.parse(JSON.stringify(schema)) as PageSchema
       const meta: PageMeta = {
-        id: schema.id,
-        name: schema.name,
-        type: schema.type,
+        id: plain.id,
+        name: plain.name,
+        type: plain.type,
         updatedAt: Date.now(),
       }
-      await tx(db, 'readwrite', (s) => s.put({ id: schema.id, schema, meta }))
+      await tx(db, 'readwrite', (s) => s.put({ id: plain.id, schema: plain, meta }))
     } finally {
       db.close()
     }
