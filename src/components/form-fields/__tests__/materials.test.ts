@@ -24,4 +24,10 @@ describe('form field materials', () => {
     const m = getMeta('Input')!
     expect(m.propsSchema.map((p) => p.name)).toContain('colSpan')
   })
+  it('Select propsSchema 含 clearable 与 filterable', () => {
+    registerFormFields()
+    const names = getMeta('Select')!.propsSchema.map((p) => p.name)
+    expect(names).toContain('clearable')
+    expect(names).toContain('filterable')
+  })
 })

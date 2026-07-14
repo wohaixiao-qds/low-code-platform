@@ -4,6 +4,8 @@
       :value="value"
       :options="options"
       :placeholder="placeholder"
+      v-bind="controlProps"
+      style="width: 100%"
       @update:value="(v: unknown) => emit('update:value', v)"
     />
   </a-form-item>
@@ -18,6 +20,15 @@ const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 const label = computed(() => String(props.propValues.label ?? ''))
 const placeholder = computed(() => String(props.propValues.placeholder ?? ''))
 const required = computed(() => !!props.propValues.required)
+
+const controlProps = computed(() => {
+  const p = props.propValues
+  return {
+    allowClear: p.clearable !== false,
+    showSearch: !!p.filterable,
+    disabled: !!p.disabled,
+  }
+})
 
 const options = computed(() => {
   const raw = props.propValues.options

@@ -2,9 +2,7 @@
   <a-form-item :label="label">
     <a-slider
       :value="value"
-      :min="min"
-      :max="max"
-      :step="step"
+      v-bind="controlProps"
       @update:value="(v: unknown) => emit('update:value', v)"
     />
   </a-form-item>
@@ -17,7 +15,16 @@ const props = defineProps<{ value: unknown; propValues: Record<string, unknown> 
 const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 
 const label = computed(() => String(props.propValues.label ?? ''))
-const min = computed(() => Number(props.propValues.min ?? 0))
-const max = computed(() => Number(props.propValues.max ?? 100))
-const step = computed(() => Number(props.propValues.step ?? 1))
+
+const numOr = (v: unknown, d: number): number => (typeof v === 'number' && !Number.isNaN(v) ? v : d)
+
+const controlProps = computed(() => {
+  const p = props.propValues
+  return {
+    min: numOr(p.min, 0),
+    max: numOr(p.max, 100),
+    step: numOr(p.step, 1),
+    disabled: !!p.disabled,
+  }
+})
 </script>

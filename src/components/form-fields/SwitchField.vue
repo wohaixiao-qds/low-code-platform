@@ -2,6 +2,7 @@
   <a-form-item :label="label" :required="required">
     <a-switch
       :checked="!!value"
+      v-bind="controlProps"
       @change="(v: unknown) => emit('update:value', v)"
     />
   </a-form-item>
@@ -15,4 +16,15 @@ const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 
 const label = computed(() => String(props.propValues.label ?? ''))
 const required = computed(() => !!props.propValues.required)
+
+const controlProps = computed(() => {
+  const p = props.propValues
+  const active = p.activeText
+  const inactive = p.inactiveText
+  return {
+    disabled: !!p.disabled,
+    checkedChildren: typeof active === 'string' ? active : undefined,
+    unCheckedChildren: typeof inactive === 'string' ? inactive : undefined,
+  }
+})
 </script>

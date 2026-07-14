@@ -2,9 +2,18 @@
   <a-form-item :label="label" :required="required">
     <a-checkbox-group
       :value="value"
-      :options="options"
+      :class="{ 'dir-vertical': direction === 'vertical' }"
       @update:value="(v: unknown) => emit('update:value', v)"
-    />
+    >
+      <a-checkbox
+        v-for="opt in options"
+        :key="opt.value"
+        :value="opt.value"
+        :disabled="disabled"
+      >
+        {{ opt.label }}
+      </a-checkbox>
+    </a-checkbox-group>
   </a-form-item>
 </template>
 
@@ -16,14 +25,20 @@ const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 
 const label = computed(() => String(props.propValues.label ?? ''))
 const required = computed(() => !!props.propValues.required)
+const disabled = computed(() => !!props.propValues.disabled)
+const direction = computed(() => String(props.propValues.direction ?? 'horizontal'))
 
-const options = computed(() => {
+interface Opt {
+  label: string
+  value: string | number
+}
+const options = computed<Opt[]>(() => {
   const raw = props.propValues.options
-  if (Array.isArray(raw)) return raw
+  if (Array.isArray(raw)) return raw as Opt[]
   if (typeof raw === 'string') {
     try {
       const parsed = JSON.parse(raw)
-      return Array.isArray(parsed) ? parsed : []
+      return Array.isArray(parsed) ? (parsed as Opt[]) : []
     } catch {
       return []
     }
@@ -31,3 +46,10 @@ const options = computed(() => {
   return []
 })
 </script>
+
+<style scoped>
+.dir-vertical {
+  display: flex;
+  flex-direction: column;
+}
+</style>

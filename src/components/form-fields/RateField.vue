@@ -2,7 +2,7 @@
   <a-form-item :label="label">
     <a-rate
       :value="value"
-      :count="max"
+      v-bind="controlProps"
       @update:value="(v: unknown) => emit('update:value', v)"
     />
   </a-form-item>
@@ -15,5 +15,14 @@ const props = defineProps<{ value: unknown; propValues: Record<string, unknown> 
 const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 
 const label = computed(() => String(props.propValues.label ?? ''))
-const max = computed(() => Number(props.propValues.max ?? 5))
+
+const controlProps = computed(() => {
+  const p = props.propValues
+  const count = p.count
+  return {
+    count: typeof count === 'number' ? count : 5,
+    allowHalf: !!p.allowHalf,
+    disabled: !!p.disabled,
+  }
+})
 </script>
