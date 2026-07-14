@@ -4,9 +4,15 @@ import { registerFormFields } from '../materials'
 
 describe('form field materials', () => {
   beforeEach(() => clearRegistry())
-  it('注册后表单字段分组有 8 个', () => {
+  it('注册后表单字段分组有 14 个', () => {
     registerFormFields()
-    expect(listByGroup('表单字段')).toHaveLength(8)
+    expect(listByGroup('表单字段')).toHaveLength(14)
+  })
+  it('Password/Cascader/Slider 已注册', () => {
+    registerFormFields()
+    expect(getMeta('Password')).toBeDefined()
+    expect(getMeta('Cascader')).toBeDefined()
+    expect(getMeta('Slider')).toBeDefined()
   })
   it('Input 元信息含 label prop', () => {
     registerFormFields()

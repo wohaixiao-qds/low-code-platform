@@ -16,4 +16,10 @@ describe('layout materials', () => {
     expect(m.isContainer).toBe(true)
     expect(m.propsSchema.map((p) => p.name)).toContain('columns')
   })
+  it('布局分组含 Divider 和 Alert', () => {
+    registerLayout()
+    const list = listByGroup('布局').map((m) => m.type)
+    expect(list).toContain('Divider')
+    expect(list).toContain('Alert')
+  })
 })

@@ -4,8 +4,8 @@ import { registerAll } from '../index'
 
 describe('registerAll', () => {
   beforeEach(() => clearRegistry())
-  it('注册全部物料（8 表单 + 2 布局 + 2 列表 + 1 详情 = 13）', () => {
+  it('注册全部物料（14 表单 + 4 布局 + 2 列表 + 1 详情 = 21）', () => {
     registerAll()
-    expect(listAll()).toHaveLength(13)
+    expect(listAll()).toHaveLength(21)
   })
 })
