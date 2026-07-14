@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { PageSchema, ComponentNode, DataSourceSchema, MaterialMeta, PropField, PageType } from '../types'
+import type { PageSchema, ComponentNode, DataSourceSchema, MaterialMeta, PropField, PageType, VisibleOp, VisibleCondition } from '../types'
 
 describe('schema types', () => {
   it('PageType 包含三类页面', () => {
@@ -36,5 +36,18 @@ describe('schema types', () => {
       propsSchema: [{ name: 'label', label: '标签', type: 'string' } satisfies PropField],
     }
     expect(meta.type).toBe('Input')
+  })
+})
+
+describe('visibleIf 类型', () => {
+  it('可构造 visibleIf 条件', () => {
+    const op: VisibleOp[] = ['==', '!=', 'contains', 'empty', 'notEmpty']
+    expect(op).toHaveLength(5)
+    const c: VisibleCondition = { field: 'type', op: '==', value: '个人' }
+    expect(c.op).toBe('==')
+  })
+  it('ComponentNode 支持 visibleIf', () => {
+    const n: ComponentNode = { id: 'n1', type: 'Input', props: {}, visibleIf: [{ field: 'x', op: 'empty' }] }
+    expect(n.visibleIf?.[0].op).toBe('empty')
   })
 })

@@ -20,6 +20,14 @@ export interface ComponentNode {
   props: Record<string, unknown>
   children?: ComponentNode[]
   bindings?: { field?: string }
+  visibleIf?: VisibleCondition[] // 全满足才显示；缺省 = 始终显示
+}
+
+export type VisibleOp = '==' | '!=' | 'contains' | 'empty' | 'notEmpty'
+export interface VisibleCondition {
+  field: string
+  op: VisibleOp
+  value?: string // empty/notEmpty 不需要
 }
 
 export interface PageSchema {
