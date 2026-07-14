@@ -10,22 +10,23 @@
     >
       <template #prefix><span class="search-icon">🔍</span></template>
     </a-input>
-    <div v-for="g in groups" :key="g.name" class="group">
-      <div class="group-title">{{ g.name }}</div>
-      <div
-        v-for="m in g.items"
-        :key="m.type"
-        class="material-item"
-        draggable="true"
-        :title="m.label"
-        @dragstart="onDragStart(m.type)"
-      >
-        <span class="material-icon">{{ m.icon ?? '◻' }}</span>
-        <span class="material-label">{{ m.label }}</span>
+    <div v-for="g in groups" :key="g.name" class="m-group">
+      <div class="m-group-title">{{ g.name }}</div>
+      <div class="m-grid">
+        <div
+          v-for="m in g.items"
+          :key="m.type"
+          class="m-tile"
+          :title="m.label"
+          draggable="true"
+          @dragstart="onDragStart(m.type)"
+        >
+          <span class="m-icon">{{ m.icon ?? '◻' }}</span>
+          <span class="m-label">{{ m.label }}</span>
+        </div>
       </div>
-      <div v-if="!g.items.length" class="no-match">无匹配</div>
     </div>
-    <div v-if="!groups.length || totalShown === 0" class="no-match">未找到「{{ query }}」相关组件</div>
+    <div v-if="totalShown === 0" class="no-match">未找到「{{ query }}」相关组件</div>
   </div>
 </template>
 
@@ -62,26 +63,54 @@ function onDragStart(type: string) {
 
 <style scoped>
 .material-panel { padding: 0 8px; }
-.search { margin-bottom: 8px; }
+.material-panel h3 { margin: 0 0 8px; }
+.search { margin-bottom: 10px; }
 .search-icon { opacity: 0.5; }
-.group { margin-bottom: 8px; }
-.group-title {
-  font-size: 12px;
-  color: #999;
-  padding: 4px 0;
+
+.m-group {
+  background: #fff;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #f0f0f0;
 }
-.material-item {
+.m-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+.m-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.m-tile {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 6px;
-  border-radius: 4px;
+  gap: 5px;
+  height: 32px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #595959;
+  background: #f5f9ff;
+  border: 1px solid #f0f6ff;
+  border-radius: 3px;
   cursor: grab;
   user-select: none;
-  font-size: 13px;
+  transition: all 0.15s;
 }
-.material-item:hover { background: #f0f5ff; }
-.material-item:active { cursor: grabbing; }
-.material-icon { width: 16px; text-align: center; font-size: 14px; }
-.no-match { color: #ccc; font-size: 12px; padding: 4px 6px; }
+.m-tile:hover {
+  border-color: #1677ff;
+  color: #1677ff;
+  background: #e6f4ff;
+}
+.m-tile:active { cursor: grabbing; }
+.m-icon { width: 14px; text-align: center; font-size: 13px; }
+.m-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.no-match { color: #bbb; font-size: 12px; padding: 8px; text-align: center; }
 </style>
