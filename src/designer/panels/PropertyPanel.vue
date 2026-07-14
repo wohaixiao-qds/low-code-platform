@@ -5,12 +5,12 @@
     <a-collapse v-else v-model:active-key="openKeys" :bordered="false" expand-icon-position="start">
       <a-collapse-panel v-for="g in groups" :key="g.name" :header="g.name">
         <PropsForm
-          v-if="g.name !== '数据绑定'"
+          v-if="g.name !== '数据绑定' && g.name !== '条件显示'"
           :fields="g.fields"
           :model-value="node.props"
           @update:model-value="onUpdate"
         />
-        <template v-else>
+        <template v-else-if="g.name === '数据绑定'">
           <a-input
             :value="node.bindings?.field ?? ''"
             placeholder="字段名，如 name"
@@ -18,6 +18,13 @@
             @update:value="(v: unknown) => store.updateBindings(node!.id, (v as string) ?? '')"
           />
           <div class="binding-hint">提交时该组件的值会写入数据总线的此字段。</div>
+        </template>
+        <template v-else-if="g.name === '条件显示'">
+          <ConditionsEditor
+            :model-value="node.visibleIf ?? []"
+            @update:model-value="(v) => store.setVisibleIf(node!.id, v)"
+          />
+          <div class="binding-hint">所有条件同时满足时显示该字段。</div>
         </template>
       </a-collapse-panel>
     </a-collapse>
@@ -29,6 +36,7 @@ import { computed, ref, watch } from 'vue'
 import { useEditorStore } from '../store/editor'
 import { getMeta, type PropField } from '@/core'
 import PropsForm from '@/components/props-panel/PropsForm.vue'
+import ConditionsEditor from '@/components/props-panel/ConditionsEditor.vue'
 
 const store = useEditorStore()
 const node = computed(() => store.selectedNode)
@@ -52,6 +60,7 @@ const groups = computed<Group[]>(() => {
   })
   const result = sorted.map((name) => ({ name, fields: buckets.get(name)! }))
   result.push({ name: '数据绑定', fields: [] })
+  result.push({ name: '条件显示', fields: [] })
   return result
 })
 

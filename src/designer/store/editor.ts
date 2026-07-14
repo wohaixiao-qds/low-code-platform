@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { ComponentNode, DataSourceSchema, PageSchema } from '@/core'
+import type { ComponentNode, DataSourceSchema, PageSchema, VisibleCondition } from '@/core'
 
 const ROOT = '__root__'
 
@@ -155,6 +155,10 @@ export const useEditorStore = defineStore('editor', {
     updateBindings(id: string, field: string) {
       const n = findNode(this.schema.body, id)
       if (n) n.bindings = { ...(n.bindings ?? {}), field }
+    },
+    setVisibleIf(id: string, conditions: VisibleCondition[]) {
+      const n = findNode(this.schema.body, id)
+      if (n) n.visibleIf = conditions.length ? conditions : undefined
     },
     setDataSource(ds: DataSourceSchema) {
       this.schema.dataSource = ds
