@@ -28,6 +28,9 @@ const commonDisabled: PropField = { name: 'disabled', label: '禁用', type: 'bo
 const commonFilterable: PropField = { name: 'filterable', label: '可搜索', type: 'boolean', group: '基本' }
 const commonShowCount: PropField = { name: 'showCount', label: '字数统计', type: 'boolean', group: '基本' }
 const commonMaxlength: PropField = { name: 'maxlength', label: '最大长度', type: 'number', group: '校验' }
+const commonDefaultValue: PropField = { name: 'defaultValue', label: '默认值', type: 'string', group: '基本' }
+const commonDefaultValueNum: PropField = { name: 'defaultValue', label: '默认值', type: 'number', group: '基本' }
+const commonPattern: PropField = { name: 'pattern', label: '正则校验', type: 'string', group: '校验' }
 
 export function registerFormFields() {
   register(
@@ -46,6 +49,8 @@ export function registerFormFields() {
         commonShowCount,
         commonRequired,
         colSpan,
+        commonDefaultValue,
+        commonPattern,
       ],
     },
     InputField,
@@ -66,12 +71,14 @@ export function registerFormFields() {
         commonShowCount,
         commonRequired,
         colSpan,
+        commonDefaultValue,
+        commonPattern,
       ],
     },
     TextareaField,
   )
   register(
-    { type: 'Password', group: '表单字段', label: '密码', icon: '🔑', propsSchema: [commonLabel, commonPlaceholder, commonMaxlength, commonRequired, colSpan] },
+    { type: 'Password', group: '表单字段', label: '密码', icon: '🔑', propsSchema: [commonLabel, commonPlaceholder, commonMaxlength, commonRequired, colSpan, commonDefaultValue, commonPattern] },
     PasswordField,
   )
   register(
@@ -90,6 +97,7 @@ export function registerFormFields() {
         { name: 'max', label: '最大值', type: 'number', group: '布局' },
         { name: 'step', label: '步长', type: 'number', default: 1, group: '布局' },
         { name: 'precision', label: '小数位数', type: 'number', group: '布局' },
+        commonDefaultValueNum,
       ],
     },
     InputNumberField,
@@ -178,6 +186,7 @@ export function registerFormFields() {
         colSpan,
         optionsField,
         { name: 'multiple', label: '多选', type: 'boolean', group: '基本' },
+        commonDefaultValue,
       ],
     },
     SelectField,
@@ -188,7 +197,7 @@ export function registerFormFields() {
       group: '表单字段',
       label: '级联选择',
       icon: '🗂️',
-      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonFilterable, commonDisabled, commonRequired, colSpan, optionsField],
+      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonFilterable, commonDisabled, commonRequired, colSpan, optionsField, commonDefaultValue],
     },
     CascaderField,
   )
@@ -198,7 +207,7 @@ export function registerFormFields() {
       group: '表单字段',
       label: '树选择',
       icon: '🌳',
-      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonFilterable, commonDisabled, commonRequired, colSpan, optionsField],
+      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonFilterable, commonDisabled, commonRequired, colSpan, optionsField, commonDefaultValue],
     },
     TreeSelectField,
   )
@@ -208,7 +217,7 @@ export function registerFormFields() {
       group: '表单字段',
       label: '日期',
       icon: '📅',
-      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonDisabled, commonRequired, colSpan, { name: 'format', label: '格式', type: 'string', default: 'YYYY-MM-DD', group: '基本' }],
+      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonDisabled, commonRequired, colSpan, { name: 'format', label: '格式', type: 'string', default: 'YYYY-MM-DD', group: '基本' }, commonDefaultValue, commonPattern],
     },
     DatePickerField,
   )
@@ -218,7 +227,7 @@ export function registerFormFields() {
       group: '表单字段',
       label: '时间',
       icon: '⏰',
-      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonDisabled, commonRequired, colSpan, { name: 'format', label: '格式', type: 'string', default: 'HH:mm:ss', group: '基本' }],
+      propsSchema: [commonLabel, commonPlaceholder, commonClearable, commonDisabled, commonRequired, colSpan, { name: 'format', label: '格式', type: 'string', default: 'HH:mm:ss', group: '基本' }, commonDefaultValue, commonPattern],
     },
     TimePickerField,
   )
