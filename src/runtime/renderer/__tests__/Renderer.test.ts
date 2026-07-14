@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { reactive } from 'vue'
 import Antd from 'ant-design-vue'
@@ -143,5 +143,102 @@ describe('条件显示', () => {
     ;(ctx.data as any).type = '个人'
     await w.vm.$nextTick()
     expect(w.text()).toContain('身份证')
+  })
+})
+
+describe('表单提交校验', () => {
+  beforeEach(() => {
+    clearRegistry()
+    registerAll()
+  })
+
+  it('form 校验失败时不调用 submit', async () => {
+    const formSchema: PageSchema = {
+      version: 1,
+      type: 'form',
+      id: 'p',
+      name: 't',
+      body: [
+        { id: 'n1', type: 'Input', props: { label: '姓名', required: true }, bindings: { field: 'name' } },
+        { id: 'n2', type: 'FormActions', props: { submitText: '提交' } },
+      ],
+    }
+    const submit = vi.fn()
+    const ctx: PageRuntimeContext = {
+      data: reactive({}),
+      error: null,
+      async refresh() {},
+      async submit() {
+        submit()
+      },
+      reset() {},
+    }
+    const w = mount(Renderer, {
+      props: { schema: formSchema, ctx },
+      global: { plugins: [Antd] },
+    })
+    // 通过 FormActions 的提交按钮触发 submit 事件链 → Renderer.onSubmit
+    // FormActions 第一个按钮（type=primary）即提交按钮
+    const buttons = w.findAll('.form-actions button')
+    expect(buttons.length).toBeGreaterThan(0)
+    await buttons[0].trigger('click')
+    await new Promise((r) => setTimeout(r, 0))
+    // 姓名 required、data.name 为空 → 校验失败 → submit 不应被调用
+    expect(submit).not.toHaveBeenCalled()
+  })
+
+  it('form 校验通过时调用 submit', async () => {
+    const formSchema: PageSchema = {
+      version: 1,
+      type: 'form',
+      id: 'p2',
+      name: 't2',
+      body: [
+        { id: 'n1', type: 'Input', props: { label: '姓名', required: true }, bindings: { field: 'name' } },
+        { id: 'n2', type: 'FormActions', props: { submitText: '提交' } },
+      ],
+    }
+    const submit = vi.fn()
+    const ctx: PageRuntimeContext = {
+      data: reactive({ name: '张三' }),
+      error: null,
+      async refresh() {},
+      async submit() {
+        submit()
+      },
+      reset() {},
+    }
+    const w = mount(Renderer, {
+      props: { schema: formSchema, ctx },
+      global: { plugins: [Antd] },
+    })
+    const buttons = w.findAll('.form-actions button')
+    await buttons[0].trigger('click')
+    await new Promise((r) => setTimeout(r, 0))
+    expect(submit).toHaveBeenCalled()
+  })
+
+  it('list 类型不包 a-form（不校验）', () => {
+    const listSchema: PageSchema = {
+      version: 1,
+      type: 'list',
+      id: 'lp',
+      name: 'lt',
+      body: [{ id: 't1', type: 'Table', props: {} }],
+    }
+    const ctx: PageRuntimeContext = {
+      data: reactive({}),
+      error: null,
+      async refresh() {},
+      async submit() {},
+      reset() {},
+    }
+    const w = mount(Renderer, {
+      props: { schema: listSchema, ctx },
+      global: { plugins: [Antd] },
+    })
+    // list 类型不应包 a-form
+    expect(w.find('form').exists()).toBe(false)
+    expect(w.find('.renderer').exists()).toBe(true)
   })
 })
