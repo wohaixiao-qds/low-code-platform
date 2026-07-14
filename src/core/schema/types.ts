@@ -32,7 +32,7 @@ export interface PageSchema {
   ui?: { title?: string }
 }
 
-export type PropType = 'string' | 'number' | 'boolean' | 'select' | 'textarea'
+export type PropType = 'string' | 'number' | 'boolean' | 'select' | 'textarea' | 'fieldList'
 
 export interface PropField {
   name: string

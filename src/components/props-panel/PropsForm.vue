@@ -37,12 +37,18 @@
         size="small"
         @input="(e: unknown) => onString(f.name, e as Event)"
       />
+      <FieldListEditor
+        v-else-if="f.type === 'fieldList'"
+        :model-value="modelValue[f.name]"
+        @update:model-value="(v) => onValue(f.name, v)"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { PropField } from '@/core'
+import FieldListEditor from './FieldListEditor.vue'
 
 const props = defineProps<{ fields: PropField[]; modelValue: Record<string, unknown> }>()
 const emit = defineEmits<{ (e: 'update:modelValue', v: Record<string, unknown>): void }>()

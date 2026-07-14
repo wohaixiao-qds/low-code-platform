@@ -10,8 +10,8 @@ export function registerDetail() {
       icon: '☰',
       pageTypes: ['detail'],
       propsSchema: [
-        { name: 'fields', label: '字段(JSON)', type: 'textarea' },
-        { name: 'column', label: '每行列数', type: 'number' },
+        { name: 'fields', label: '字段', type: 'fieldList', group: '基本' },
+        { name: 'column', label: '每行列数', type: 'number', default: 1, group: '基本' },
       ],
     },
     DescriptionsField,
