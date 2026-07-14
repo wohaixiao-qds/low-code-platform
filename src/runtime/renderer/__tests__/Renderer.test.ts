@@ -108,3 +108,40 @@ describe('Renderer', () => {
     expect(w.text()).toContain('加载失败')
   })
 })
+
+describe('条件显示', () => {
+  beforeEach(() => {
+    clearRegistry()
+    registerAll()
+  })
+
+  it('运行态：visibleIf 不满足则不渲染；满足后出现', async () => {
+    const visSchema: PageSchema = {
+      version: 1,
+      type: 'form',
+      id: 'p',
+      name: 't',
+      body: [
+        { id: 'n1', type: 'Input', props: { label: '类型' }, bindings: { field: 'type' } },
+        { id: 'n2', type: 'Input', props: { label: '身份证' }, visibleIf: [{ field: 'type', op: '==', value: '个人' }] },
+      ],
+    }
+    const ctx: PageRuntimeContext = {
+      data: reactive({ type: '企业' }),
+      error: null,
+      async refresh() {},
+      async submit() {},
+      reset() {},
+    }
+    const w = mount(Renderer, {
+      props: { schema: visSchema, ctx },
+      global: { plugins: [Antd] },
+    })
+    expect(w.text()).toContain('类型')
+    expect(w.text()).not.toContain('身份证')
+    // 切换值后出现
+    ;(ctx.data as any).type = '个人'
+    await w.vm.$nextTick()
+    expect(w.text()).toContain('身份证')
+  })
+})

@@ -1,7 +1,7 @@
 <template>
   <!-- 设计态：用选中层包裹 -->
   <div
-    v-if="design"
+    v-if="design && visible"
     class="node-wrap"
     :class="{ 'is-selected': isSelected, 'is-container': isRow, 'drop-target': isRow && dragOver }"
     draggable="true"
@@ -45,7 +45,7 @@
   </div>
   <!-- 运行态：原样渲染（运行时不传 design） -->
   <component
-    v-else-if="comp && !isRow"
+    v-else-if="visible && comp && !isRow"
     :is="comp"
     :prop-values="node.props"
     :value="fieldValue"
@@ -54,7 +54,7 @@
     @reset="emit('reset')"
     @search="(v: Record<string, unknown>) => emit('search', v)"
   />
-  <a-row v-else-if="isRow" :gutter="16">
+  <a-row v-else-if="visible && isRow" :gutter="16">
     <a-col v-for="child in node.children" :key="child.id" :span="colSpan(child)">
       <NodeView :node="child" :ctx="ctx" @submit="emit('submit')" @reset="emit('reset')" @search="(v: Record<string, unknown>) => emit('search', v)" />
     </a-col>
@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import { resolveComponent, getMeta, type ComponentNode } from '@/core'
+import { resolveComponent, getMeta, evaluateVisibleIf, type ComponentNode } from '@/core'
 import type { PageRuntimeContext } from '../usePageRuntime'
 
 defineOptions({ name: 'NodeView' })
@@ -92,6 +92,10 @@ const emit = defineEmits<{
 
 const comp = computed(() => resolveComponent<any>(props.node.type))
 const isRow = computed(() => props.node.type === 'Row')
+const visible = computed(() => {
+  if (props.design) return true // 设计态不隐藏，保证隐藏字段仍可在画布编辑
+  return evaluateVisibleIf(props.node.visibleIf, props.ctx.data)
+})
 const isSelected = computed(() => props.design?.selectedId === props.node.id)
 const label = computed(() => getMeta(props.node.type)?.label ?? props.node.type)
 const dragOver = ref(false)
