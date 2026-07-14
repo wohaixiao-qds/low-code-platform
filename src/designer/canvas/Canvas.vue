@@ -83,9 +83,9 @@ function onDrop() {
 .canvas {
   height: 100%;
   min-height: 100%;
-  background-color: #fafafa;
-  background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
-  background-size: 16px 16px;
+  background-color: #f5f6f8;
+  background-image: radial-gradient(#e2e5ea 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 .empty {
   display: flex;
