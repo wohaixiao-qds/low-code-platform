@@ -11,7 +11,7 @@ export function registerList() {
       icon: '▦',
       pageTypes: ['list'],
       propsSchema: [
-        { name: 'columns', label: '列定义', type: 'fieldList', group: '基本' },
+        { name: 'columns', label: '列定义', type: 'fieldList', withMap: true, group: '基本' },
         { name: 'pageSize', label: '每页条数', type: 'number', default: 10, group: '基本' },
       ],
     },

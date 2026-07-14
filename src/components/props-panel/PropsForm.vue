@@ -40,6 +40,7 @@
       <FieldListEditor
         v-else-if="f.type === 'fieldList'"
         :model-value="modelValue[f.name]"
+        :with-map="!!f.withMap"
         @update:model-value="(v) => onValue(f.name, v)"
       />
     </div>

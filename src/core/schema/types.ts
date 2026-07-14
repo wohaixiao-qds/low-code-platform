@@ -41,6 +41,7 @@ export interface PropField {
   options?: Array<{ label: string; value: string | number }>
   default?: unknown
   group?: string // 属性分组（属性面板按此折叠展示）；缺省 = '基本'
+  withMap?: boolean // fieldList 类型：是否允许每项配置「值转义」映射（如 0→禁用）
 }
 
 export interface MaterialMeta {
