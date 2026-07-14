@@ -1,7 +1,19 @@
 import { reactive } from 'vue'
 import { message } from 'ant-design-vue'
-import type { PageSchema } from '@/core'
+import type { ComponentNode, PageSchema } from '@/core'
 import { exec } from './datasource/executor'
+
+/**
+ * 递归收集节点树中带 bindings.field 的 props.defaultValue，写入 acc。
+ * 纯函数，模块私有。
+ */
+function collectDefaults(nodes: ComponentNode[], acc: Record<string, unknown>) {
+  for (const n of nodes) {
+    const f = n.bindings?.field
+    if (f && n.props && n.props.defaultValue !== undefined) acc[f] = n.props.defaultValue
+    if (n.children?.length) collectDefaults(n.children, acc)
+  }
+}
 
 /**
  * 数据总线上下文（由 Renderer/NodeView 消费）。
@@ -22,6 +34,7 @@ export interface PageRuntimeContext {
  */
 export function usePageRuntime(schema: PageSchema): PageRuntimeContext {
   const data = reactive<Record<string, unknown>>({})
+  collectDefaults(schema.body, data) // 种入默认值（load 时会覆盖）
   const ctx: PageRuntimeContext = {
     data,
     error: null,

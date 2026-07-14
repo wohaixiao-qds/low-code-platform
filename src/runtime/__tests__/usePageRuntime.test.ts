@@ -25,3 +25,26 @@ describe('usePageRuntime', () => {
     expect(ctx.data.name).toBeUndefined()
   })
 })
+
+describe('默认值种入', () => {
+  it('初始化时把 defaultValue 种入数据总线', () => {
+    const schema: PageSchema = {
+      version: 1, type: 'form', id: 'p', name: 't',
+      body: [
+        { id: 'n1', type: 'Input', props: { defaultValue: '张三' }, bindings: { field: 'name' } },
+        { id: 'r', type: 'Row', props: {}, children: [
+          { id: 'n2', type: 'InputNumber', props: { defaultValue: 18 }, bindings: { field: 'age' } },
+        ] },
+      ],
+    }
+    const ctx = usePageRuntime(schema)
+    expect(ctx.data.name).toBe('张三')
+    expect(ctx.data.age).toBe(18)
+  })
+  it('无 defaultValue 的字段不种', () => {
+    const schema: PageSchema = { version: 1, type: 'form', id: 'p', name: 't',
+      body: [{ id: 'n1', type: 'Input', props: {}, bindings: { field: 'name' } }] }
+    const ctx = usePageRuntime(schema)
+    expect(ctx.data.name).toBeUndefined()
+  })
+})
