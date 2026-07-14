@@ -46,7 +46,7 @@ describe('PageSettings', () => {
     // (b) 点击后弹窗标题出现（antd Modal 通过 teleport 挂到 document.body）
     await btn.trigger('click')
     await nextTick()
-    expect(document.body.textContent).toContain('页面设置（数据源）')
+    expect(document.body.textContent).toContain('表单布局')
   })
 
   it('打开弹窗回显并 OK 后写回 store.schema.dataSource', async () => {

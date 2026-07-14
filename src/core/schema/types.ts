@@ -37,7 +37,12 @@ export interface PageSchema {
   name: string
   dataSource?: DataSourceSchema
   body: ComponentNode[]
-  ui?: { title?: string }
+  ui?: {
+    title?: string
+    labelPosition?: 'top' | 'left' // 标签位置：顶部 / 左侧
+    labelAlign?: 'left' | 'right'  // 标签对齐（左侧时生效）
+    labelWidth?: number            // 标签宽度（px，左侧时生效）
+  }
 }
 
 export type PropType = 'string' | 'number' | 'boolean' | 'select' | 'textarea' | 'fieldList'

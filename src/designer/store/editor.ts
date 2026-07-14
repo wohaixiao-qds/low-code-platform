@@ -163,6 +163,9 @@ export const useEditorStore = defineStore('editor', {
     setDataSource(ds: DataSourceSchema) {
       this.schema.dataSource = ds
     },
+    setUi(patch: Partial<NonNullable<PageSchema['ui']>>) {
+      this.schema.ui = { ...(this.schema.ui ?? {}), ...patch }
+    },
     setName(name: string) {
       this.schema.name = name
     },
