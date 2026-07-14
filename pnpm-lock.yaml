@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ant-design/icons-vue':
+        specifier: ^7.0.1
+        version: 7.0.1(vue@3.5.39(typescript@6.0.3))
       ant-design-vue:
         specifier: ^4.0.0
         version: 4.0.0(vue@3.5.39(typescript@6.0.3))
@@ -62,6 +65,11 @@ packages:
 
   '@ant-design/icons-vue@6.1.0':
     resolution: {integrity: sha512-EX6bYm56V+ZrKN7+3MT/ubDkvJ5rK/O2t380WFRflDcVFgsvl3NLH7Wxeau6R8DbrO5jWR6DSTC3B6gYFp77AA==}
+    peerDependencies:
+      vue: '>=3.0.3'
+
+  '@ant-design/icons-vue@7.0.1':
+    resolution: {integrity: sha512-eCqY2unfZK6Fe02AwFlDHLfoyEFreP6rBwAZMIJ1LugmfMiVgwWDYlp1YsRugaPtICYOabV1iWxXdP12u9U43Q==}
     peerDependencies:
       vue: '>=3.0.3'
 
@@ -1027,6 +1035,12 @@ snapshots:
   '@ant-design/icons-svg@4.5.0': {}
 
   '@ant-design/icons-vue@6.1.0(vue@3.5.39(typescript@6.0.3))':
+    dependencies:
+      '@ant-design/colors': 6.0.0
+      '@ant-design/icons-svg': 4.5.0
+      vue: 3.5.39(typescript@6.0.3)
+
+  '@ant-design/icons-vue@7.0.1(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       '@ant-design/colors': 6.0.0
       '@ant-design/icons-svg': 4.5.0

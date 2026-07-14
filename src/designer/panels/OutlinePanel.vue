@@ -10,7 +10,7 @@
       :style="{ paddingLeft: 6 + f.depth * 14 + 'px' }"
       @click="store.selectNode(f.node.id)"
     >
-      <span class="oi-icon">{{ iconOf(f.node.type) }}</span>
+      <span class="oi-icon"><MaterialIcon :type="f.node.type" /></span>
       <span class="oi-label">{{ labelOf(f.node.type) }}</span>
       <span v-if="f.node.bindings?.field" class="oi-field">· {{ f.node.bindings.field }}</span>
     </div>
@@ -21,6 +21,7 @@
 import { computed } from 'vue'
 import { useEditorStore } from '../store/editor'
 import { getMeta, type ComponentNode } from '@/core'
+import MaterialIcon from '@/components/MaterialIcon.vue'
 
 const store = useEditorStore()
 
@@ -34,7 +35,6 @@ function flatten(nodes: ComponentNode[], depth = 0, acc: FlatNode[] = []): FlatN
 }
 const flat = computed(() => flatten(store.schema.body))
 
-const iconOf = (t: string) => getMeta(t)?.icon ?? '◻'
 const labelOf = (t: string) => getMeta(t)?.label ?? t
 </script>
 
@@ -63,7 +63,15 @@ const labelOf = (t: string) => getMeta(t)?.label ?? t
   font-weight: 500;
 }
 .outline-item.is-container .oi-label { font-weight: 600; }
-.oi-icon { width: 16px; text-align: center; font-size: 13px; }
+.oi-icon {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #8c8c8c;
+}
+.outline-item.active .oi-icon { color: #1677ff; }
 .oi-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oi-field { color: #999; font-size: 12px; }
 .outline-item.active .oi-field { color: #69b1ff; }

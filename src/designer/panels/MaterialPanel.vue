@@ -21,7 +21,7 @@
           draggable="true"
           @dragstart="onDragStart(m.type)"
         >
-          <span class="m-icon">{{ m.icon ?? '◻' }}</span>
+          <span class="m-icon"><MaterialIcon :type="m.type" /></span>
           <span class="m-label">{{ m.label }}</span>
         </div>
       </div>
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { listAll, type PageType } from '@/core'
+import MaterialIcon from '@/components/MaterialIcon.vue'
 
 const props = defineProps<{ pageType: PageType }>()
 const query = ref('')
@@ -106,7 +107,15 @@ function onDragStart(type: string) {
   background: #e6f4ff;
 }
 .m-tile:active { cursor: grabbing; }
-.m-icon { width: 14px; text-align: center; font-size: 13px; }
+.m-icon {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #1677ff;
+}
+.m-tile:hover .m-icon { color: #1677ff; }
 .m-label {
   overflow: hidden;
   text-overflow: ellipsis;
