@@ -39,7 +39,7 @@ src/designer/panels/PropertyPanel.vue # 改：加「条件显示」分组
 
 ---
 
-## Task F1: core 类型扩展
+## Task 1: core 类型扩展
 
 **Files:** Modify `src/core/schema/types.ts`
 **Test:** `src/core/schema/__tests__/types.test.ts`（已有，加用例）
@@ -89,7 +89,7 @@ export interface ComponentNode {
 
 ---
 
-## Task F2: evaluateVisibleIf 纯函数
+## Task 2: evaluateVisibleIf 纯函数
 
 **Files:** Create `src/core/schema/visible.ts`；Modify `src/core/index.ts`
 **Test:** `src/core/schema/__tests__/visible.test.ts`
@@ -198,7 +198,7 @@ export function evaluateVisibleIf(
 
 ---
 
-## Task F3: buildRules 纯函数
+## Task 3: buildRules 纯函数
 
 **Files:** Create `src/core/schema/rules.ts`；Modify `src/core/index.ts`
 **Test:** `src/core/schema/__tests__/rules.test.ts`
@@ -275,7 +275,7 @@ export function buildRules(node: ComponentNode): ValidationRule[] {
 
 ---
 
-## Task F4: usePageRuntime 默认值种入
+## Task 4: usePageRuntime 默认值种入
 
 **Files:** Modify `src/runtime/usePageRuntime.ts`
 **Test:** `src/runtime/__tests__/usePageRuntime.test.ts`（已有，加用例）
@@ -339,7 +339,7 @@ function collectDefaults(nodes: ComponentNode[], acc: Record<string, unknown>) {
 
 ---
 
-## Task F5: NodeView 条件显示
+## Task 5: NodeView 条件显示
 
 **Files:** Modify `src/runtime/renderer/NodeView.vue`
 **Test:** `src/runtime/renderer/__tests__/Renderer.test.ts`（已有，加用例）
@@ -394,7 +394,7 @@ const visible = computed(() => {
 
 ---
 
-## Task F6: 物料属性补充（defaultValue + pattern）
+## Task 6: 物料属性补充（defaultValue + pattern）
 
 **Files:** Modify `src/components/form-fields/materials.ts`
 
@@ -424,7 +424,7 @@ const commonPattern: PropField = { name: 'pattern', label: '正则校验', type:
 
 ---
 
-## Task F7: 字段组件绑 name/rules
+## Task 7: 字段组件绑 name/rules
 
 **Files:** Modify `src/components/form-fields/*.vue`（14 个）、`src/runtime/renderer/NodeView.vue`
 
@@ -458,7 +458,7 @@ const rules = computed(() => buildRules(props.node))
 
 ---
 
-## Task F8: Renderer 表单校验执行
+## Task 8: Renderer 表单校验执行
 
 **Files:** Modify `src/runtime/renderer/Renderer.vue`
 **Test:** `src/runtime/renderer/__tests__/Renderer.test.ts`（加用例）
@@ -529,7 +529,7 @@ async function onSubmit() {
 
 ---
 
-## Task F9: 条件显示编辑器
+## Task 9: 条件显示编辑器
 
 **Files:** Create `src/components/props-panel/ConditionsEditor.vue`；Modify `src/designer/panels/PropertyPanel.vue`
 **Test:** `src/components/props-panel/__tests__/ConditionsEditor.test.ts`
@@ -631,7 +631,7 @@ setVisibleIf(id: string, conditions: VisibleCondition[]) {
 
 ---
 
-## Task F10: 全量回归与手动 e2e
+## Task 10: 全量回归与手动 e2e
 
 - [ ] **Step 1: 全量测试** — `pnpm vitest run`，全部通过（原 57 + 本期新增）。
 - [ ] **Step 2: build** — `pnpm build` exit 0。
