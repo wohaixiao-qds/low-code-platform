@@ -31,6 +31,8 @@
       :is="comp"
       :prop-values="node.props"
       :value="fieldValue"
+      :name="node.bindings?.field"
+      :rules="rules"
       @update:value="onUpdate"
       @submit="emit('submit')"
       @reset="emit('reset')"
@@ -49,6 +51,8 @@
     :is="comp"
     :prop-values="node.props"
     :value="fieldValue"
+    :name="node.bindings?.field"
+    :rules="rules"
     @update:value="onUpdate"
     @submit="emit('submit')"
     @reset="emit('reset')"
@@ -64,7 +68,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import { resolveComponent, getMeta, evaluateVisibleIf, type ComponentNode } from '@/core'
+import { resolveComponent, getMeta, evaluateVisibleIf, buildRules, type ComponentNode } from '@/core'
 import type { PageRuntimeContext } from '../usePageRuntime'
 
 defineOptions({ name: 'NodeView' })
@@ -91,6 +95,7 @@ const emit = defineEmits<{
 }>()
 
 const comp = computed(() => resolveComponent<any>(props.node.type))
+const rules = computed(() => buildRules(props.node))
 const isRow = computed(() => props.node.type === 'Row')
 const visible = computed(() => {
   if (props.design) return true // 设计态不隐藏，保证隐藏字段仍可在画布编辑

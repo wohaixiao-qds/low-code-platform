@@ -1,5 +1,5 @@
 <template>
-  <a-form-item :label="label" :required="required">
+  <a-form-item :label="label" :required="required" :name="name" :rules="rules">
     <a-radio-group
       :value="value"
       :class="{ 'dir-vertical': direction === 'vertical' }"
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{ value: unknown; propValues: Record<string, unknown> }>()
+const props = defineProps<{ value: unknown; propValues: Record<string, unknown>; name?: string; rules?: unknown[] }>()
 const emit = defineEmits<{ (e: 'update:value', v: unknown): void }>()
 
 const label = computed(() => String(props.propValues.label ?? ''))
